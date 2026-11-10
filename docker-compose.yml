@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: secure_notes_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: secure_note_taking
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: .
+    container_name: secure_notes_api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongodb:27017/secure_note_taking
+      JWT_SECRET: production_jwt_secret_antigravity_assignment_2026_super_key!
+      JWT_EXPIRES_IN: 7d
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
+
